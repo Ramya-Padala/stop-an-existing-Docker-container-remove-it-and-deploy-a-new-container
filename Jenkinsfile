@@ -27,6 +27,7 @@ pipeline {
         sh '''
         docker ps -a
         docker stop <container_name>
+        '''
         }
         }
   stage('deploy') {
