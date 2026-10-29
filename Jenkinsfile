@@ -48,14 +48,28 @@ stage('Remove Existing Docker Container') {
     }
 }
 
-  stage('deploy') {
-    steps {
-      sh '''
-      docker run -dit --name my-running-app -p 8086:80 my-apache-app:latest .
-       echo "Deployment completed."
-      '''
-      }
-      }
+  stage('Deploy') {
+            steps {
+                sh '''
+                    docker run -d \
+                        --name my-running-app \
+                        --restart unless-stopped \
+                        -p 8086:80 \
+                        my-apache-app:latest
+
+                    echo "Deployment completed."
+                '''
+            }
+        }
+    stage('Verify Deployment') {
+            steps {
+                sh '''
+                    docker ps --filter "name=^/my-running-app$"
+                    curl --fail --retry 5 --retry-delay 2 \
+                        http://127.0.0.1:8086/
+                '''
+            }
+        }
 }
 post {
         success {
