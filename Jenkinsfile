@@ -26,14 +26,15 @@ pipeline {
       steps {
         sh '''
         docker ps -a
-        docker stop <container_name>
+        docker stop my-running-app
         '''
         }
         }
   stage('deploy') {
     steps {
       sh '''
-      docker run -dit --name my-running-app -p 8086:80 my-apache-app .
+      docker run -dit --name my-running-app -p 8086:80 my-apache-app:latest .
+       echo "Deployment completed."
       '''
       }
       }
