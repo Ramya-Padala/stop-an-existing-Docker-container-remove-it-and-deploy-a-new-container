@@ -10,20 +10,33 @@ pipeline {
     stage('test docker iamge') {
       steps {
         sh '''
+        docker --version
         docker ps -a
-        docker stop <container_name>
-        docker rm -f <container_id_or_name>
         '''
       }
     }
     stage('build docker image') {
+      steps {
       sh '''
      docker build -t my-apache-app .
-     docker run -dit --name my-running-app -p 8086:80 my-apache-app
      '''
     }
   }
+    stage('stop existingDocker container') {
+      steps {
+        sh '''
+        docker ps -a
+        docker stop <container_name>
+        }
+        }
+  stage('deploy') {
+    steps {
+      sh '''
+      docker run -dit --name my-running-app -p 8086:80 my-apache-app
+      '''
 }
+  }
+  }
 post {
         success {
             echo 'CI/CD pipeline completed successfully.'
