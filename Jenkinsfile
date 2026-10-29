@@ -32,11 +32,11 @@ pipeline {
   stage('deploy') {
     steps {
       sh '''
-      docker run -dit --name my-running-app -p 8086:80 my-apache-app
+      docker run -dit --name my-running-app -p 8086:80 my-apache-app .
       '''
+      }
+      }
 }
-  }
-  }
 post {
         success {
             echo 'CI/CD pipeline completed successfully.'
