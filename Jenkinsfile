@@ -25,11 +25,29 @@ pipeline {
     stage('stop existingDocker container') {
       steps {
         sh '''
-        docker ps -a
-        docker stop my-running-app
+            if docker container inspect my-running-app >/dev/null 2>&1; then
+                docker stop my-running-app
+                echo "Existing container stopped."
+            else
+                echo "Container my-running-app does not exist. Continuing deployment."
+            fi
         '''
-        }
-        }
+    }
+    }
+    
+stage('Remove Existing Docker Container') {
+    steps {
+        sh '''
+            if docker container inspect my-running-app >/dev/null 2>&1; then
+                docker rm my-running-app
+                echo "Existing container removed."
+            else
+                echo "No existing container to remove."
+            fi
+        '''
+    }
+}
+
   stage('deploy') {
     steps {
       sh '''
